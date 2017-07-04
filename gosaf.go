@@ -33,6 +33,9 @@ func main() {
 	}
 
 	req, err := http.NewRequest("GET", "https://news.ycombinator.com/", nil)
+
+	// TODO OAuth
+	// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
 	req.SetBasicAuth("username1", "password123")
 
 	if err != nil {
