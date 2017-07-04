@@ -38,6 +38,20 @@ func main() {
 	// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
 	req.SetBasicAuth("username1", "password123")
 
+	/*
+
+	i.e.
+
+	form: {
+      "client_id" : this.clientId,
+      "client_secret" : this.clientSecret,
+      "grant_type" : "password",
+      "username" : username,
+      "password" : password
+    },
+
+	 */
+
 	if err != nil {
 		panic(err)
 	}
