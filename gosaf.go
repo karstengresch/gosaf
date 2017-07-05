@@ -14,6 +14,8 @@ import (
 	"golang.org/x/net/publicsuffix"
 	"log"
 	"io/ioutil"
+	"fmt"
+	"os"
 )
 
 func basicAuth(username, password string) string {
@@ -36,6 +38,16 @@ func main() {
 	flag.StringVar(&username, "u", "USERNAME", "Your username.")
 	flag.StringVar(&password, "p", "PASSWORD", "Your password.")
 	flag.StringVar(&bookid, "b", "BOOKID", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
+
+	flag.Usage = func() {
+		fmt.Printf("Usage of %s:\n", os.Args[0])
+		fmt.Printf("  -u <username> -p <password> -i <bookid>, e.g. -u myUserName -p myPassword -i 87654321\n")
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
+
+	fmt.Println("Input u: ", username)
 
 	baseUrl := "https://www.safaribooksonline.com"
 
