@@ -68,7 +68,7 @@ func main() {
 		return
 	}
 
-	//
+	// Connection creation
 
 	baseUrl := "https://www.safaribooksonline.com"
 	// loginSubUrl := "/accounts/login"
