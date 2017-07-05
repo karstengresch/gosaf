@@ -56,11 +56,8 @@ func main() {
 	}
 
 	fmt.Println("Please enter your password:")
-	if _, err := fmt.Scanf("%s", &password); err != nil {
-		fmt.Printf("%s\n", err)
-		return
-	}
-
+	passwordHidden, err := terminal.ReadPassword(0)
+	password = string(passwordHidden)
 
 	if password== "" {
 		fmt.Println("Password not given. Program exits.")
