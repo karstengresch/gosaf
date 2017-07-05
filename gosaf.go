@@ -24,12 +24,10 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func redirectPolicyFunc(req *http.Request, via []*http.Request) error{
-	req.Header.Add("Authorization","Basic "+basicAuth("username1","password123"))
+func redirectPolicyFunc(req *http.Request, via []*http.Request) error {
+	req.Header.Add("Authorization", "Basic "+basicAuth("username1", "password123"))
 	return nil
 }
-
-
 
 func main() {
 	var username string
@@ -51,31 +49,48 @@ func main() {
 	fmt.Println("Input u: ", username)
 
 	if username == "" {
-	  fmt.Println("Username not given. Program exits.")
-	  return
+		fmt.Println("Username not given. Program exits.")
+		return
 	}
 
 	fmt.Println("Please enter your password:")
 	passwordHidden, err := terminal.ReadPassword(0)
 	password = string(passwordHidden)
 
-	if password== "" {
+	if password == "" {
 		fmt.Println("Password not given. Program exits.")
 		return
 	}
-	if bookid== "" {
+	if bookid == "" {
 		fmt.Println("Book-ID not given. You can find the bookid using your web browser: https://www.safaribooksonline.com/library/view/yourbookname/>>>9781788390552<<< \nProgram exits now.")
 		return
 	}
 
 	// Connection creation
 
+	/*
+// TODO OAuth
+// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
+req.SetBasicAuth("username1", "password123")
+
+
+i.e.
+
+form: {
+  "client_id" : this.clientId,
+  "client_secret" : this.clientSecret,
+  "grant_type" : "password",
+  "username" : username,
+  "password" : password
+},
+
+*/
+
 	baseUrl := "https://www.safaribooksonline.com"
 	// loginSubUrl := "/accounts/login"
 	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
-
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
@@ -86,11 +101,11 @@ func main() {
 	client := http.Client{Jar: jar}
 	resp, err := client.PostForm(baseUrl, url.Values{
 
-		"client_id" : {clientId},
-		"client_secret" : {clientSecret},
-		"grant_type" : {"password"},
-		"username": {username},
-		"password" : {password},
+		"client_id":     {clientId},
+		"client_secret": {clientSecret},
+		"grant_type":    {"password"},
+		"username":      {username},
+		"password":      {password},
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -108,7 +123,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(string(data))   // print whole html of user profile data
+	log.Println(string(data)) // print whole html of user profile data
 
 	/*
 	cookieJar, _ := cookiejar.New(nil)
@@ -120,26 +135,9 @@ func main() {
 	}
 
 	req, err := http.NewRequest("GET", "https://news.ycombinator.com/", nil)
-
-	// TODO OAuth
-	// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
-	req.SetBasicAuth("username1", "password123")
-
 */
 
 	/*
-
-	i.e.
-
-	form: {
-      "client_id" : this.clientId,
-      "client_secret" : this.clientSecret,
-      "grant_type" : "password",
-      "username" : username,
-      "password" : password
-    },
-
-
 
 	if err != nil {
 		panic(err)
