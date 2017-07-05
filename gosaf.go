@@ -30,6 +30,8 @@ func redirectPolicyFunc(req *http.Request, via []*http.Request) error{
 
 func main() {
 
+	baseUrl := "https://www.safaribooksonline.com"
+
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
@@ -38,7 +40,7 @@ func main() {
 		log.Fatal(err)
 	}
 	client := http.Client{Jar: jar}
-	resp, err := client.PostForm("http://website.com/login", url.Values{
+	resp, err := client.PostForm(baseUrl, url.Values{
 		"password": {"loginpassword"},
 		"username" : {"testuser"},
 	})
@@ -47,7 +49,7 @@ func main() {
 	}
 
 
-	resp, err = client.PostForm("http://website.com/upser_profile_page", url.Values{
+	resp, err = client.PostForm("baseUrl"+"/oauth2/access_token/", url.Values{
 		"userid": {"2"},
 	})
 	if err != nil {
