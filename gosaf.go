@@ -10,6 +10,7 @@ import (
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
+	"golang.org/x/crypto/ssh/terminal"
 	"net/url"
 	"golang.org/x/net/publicsuffix"
 	"log"
@@ -36,7 +37,7 @@ func main() {
 	var bookid string
 
 	flag.StringVar(&username, "u", "", "Your username.")
-	flag.StringVar(&password, "p", "", "Your password.")
+	flag.StringVar(&password, "p", "", "Your password (optional, you can enter it interactively.")
 	flag.StringVar(&bookid, "b", "", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
 
 	flag.Usage = func() {
@@ -53,6 +54,14 @@ func main() {
 	  fmt.Println("Username not given. Program exits.")
 	  return
 	}
+
+	fmt.Println("Please enter your password:")
+	if _, err := fmt.Scanf("%s", &password); err != nil {
+		fmt.Printf("%s\n", err)
+		return
+	}
+
+
 	if password== "" {
 		fmt.Println("Password not given. Program exits.")
 		return
