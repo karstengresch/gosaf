@@ -35,9 +35,9 @@ func main() {
 	var password string
 	var bookid string
 
-	flag.StringVar(&username, "u", "USERNAME", "Your username.")
-	flag.StringVar(&password, "p", "PASSWORD", "Your password.")
-	flag.StringVar(&bookid, "b", "BOOKID", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
+	flag.StringVar(&username, "u", "", "Your username.")
+	flag.StringVar(&password, "p", "", "Your password.")
+	flag.StringVar(&bookid, "b", "", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
@@ -49,7 +49,24 @@ func main() {
 
 	fmt.Println("Input u: ", username)
 
+	if username == "" {
+	  fmt.Println("Username not given. Program exits.")
+	  return
+	}
+	if password== "" {
+		fmt.Println("Password not given. Program exits.")
+		return
+	}
+	if bookid== "" {
+		fmt.Println("Book-ID not given. You can find the bookid using your web browser: https://www.safaribooksonline.com/library/view/yourbookname/>>>9781788390552<<< \nProgram exits now.")
+		return
+	}
+
+	//
+
 	baseUrl := "https://www.safaribooksonline.com"
+	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
+	clientId := "446a8a270214734f42a7";
 
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
@@ -60,8 +77,12 @@ func main() {
 	}
 	client := http.Client{Jar: jar}
 	resp, err := client.PostForm(baseUrl, url.Values{
-		"password": {"loginpassword"},
-		"username" : {"testuser"},
+
+		"client_id" : {clientId},
+		"client_secret" : {clientSecret},
+		"grant_type" : {"password"},
+		"username": {username},
+		"password" : {password},
 	})
 	if err != nil {
 		log.Fatal(err)
