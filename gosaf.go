@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"encoding/base64"
 	_ "fmt"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
-	// "github.com/spf13/cobra"
 	"net/url"
 	"golang.org/x/net/publicsuffix"
 	"log"
@@ -29,6 +29,13 @@ func redirectPolicyFunc(req *http.Request, via []*http.Request) error{
 
 
 func main() {
+	var username string
+	var password string
+	var bookid string
+
+	flag.StringVar(&username, "u", "USERNAME", "Your username.")
+	flag.StringVar(&password, "p", "PASSWORD", "Your password.")
+	flag.StringVar(&bookid, "b", "BOOKID", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
 
 	baseUrl := "https://www.safaribooksonline.com"
 
@@ -47,7 +54,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	resp, err = client.PostForm("baseUrl"+"/oauth2/access_token/", url.Values{
 		"userid": {"2"},
