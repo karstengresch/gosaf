@@ -6,7 +6,6 @@ import (
 	_ "fmt"
 	"net/http"
 	"net/http/cookiejar"
-
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
@@ -67,7 +66,6 @@ func main() {
 	}
 
 	// Connection creation
-
 	/*
 // TODO OAuth
 // TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
@@ -89,8 +87,6 @@ form: {
 	baseUrl := "https://www.safaribooksonline.com"
 	// loginSubUrl := "/accounts/login"
 	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
-	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
-	clientId := "446a8a270214734f42a7";
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
@@ -99,6 +95,10 @@ form: {
 		log.Fatal(err)
 	}
 	client := http.Client{Jar: jar}
+
+	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
+	clientId := "446a8a270214734f42a7";
+
 	resp, err := client.PostForm(baseUrl, url.Values{
 
 		"client_id":     {clientId},
