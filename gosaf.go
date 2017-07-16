@@ -47,15 +47,15 @@ func redirectPolicyFunc(req *http.Request, via []*http.Request) error {
 func main() {
 	var username string
 	var password string
-	var bookid string
+	var bookurl string
 
 	flag.StringVar(&username, "u", "", "Your username.")
 	flag.StringVar(&password, "p", "", "Your password (optional, you can enter it interactively.)")
-	flag.StringVar(&bookid, "b", "", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
+	flag.StringVar(&bookurl, "b", "", "The bookurl. Open the book in the browser, it ends /w a number.")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
-		fmt.Printf("  -u <username> -p <password> -i <bookid>, e.g. -u myUserName -p myPassword -i 87654321\n")
+		fmt.Printf("  -u <username> -p <password> -i <bookurl>, e.g. -u myUserName -p myPassword -i 87654321\n")
 		flag.PrintDefaults()
 	}
 
@@ -71,6 +71,9 @@ func main() {
 	if password == "" {
 		fmt.Println("Please enter your password:")
 		passwordHidden, err := terminal.ReadPassword(0)
+		if err != nil {
+			log.Fatal(err)
+		}
 		password = string(passwordHidden)
 		// recheck
 		if password == "" {
@@ -78,8 +81,8 @@ func main() {
 			return
 		}
 	}
-	if bookid == "" {
-		fmt.Println("Book-ID not given. You can find the bookid using your web browser: https://www.safaribooksonline.com/library/view/yourbookname/>>>9781788390552<<< \nProgram exits now.")
+	if bookurl == "" {
+		fmt.Println("Book URL not given. You can find the bookurl using your web browser: https://www.safaribooksonline.com/library/view/yourbookname/9781788390552 \nProgram exits now.")
 		return
 	}
 
@@ -130,6 +133,7 @@ form: {
 		"password":      {password},
 	})
 	if err != nil {
+		fmt.Println("Could not post form for client details.")
 		log.Fatal(err)
 	}
 
@@ -137,6 +141,7 @@ form: {
 		"userid": {"2"},
 	})
 	if err != nil {
+		fmt.Println("OAuth2 post form did not work.")
 		log.Fatal(err)
 	}
 
