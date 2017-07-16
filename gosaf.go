@@ -18,6 +18,22 @@ import (
 	"os"
 )
 
+type myjar struct {
+	jar map[string] []*http.Cookie
+}
+
+func (p* myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
+	fmt.Printf("The URL is : %s\n", u.String())
+	fmt.Printf("The cookie being set is : %s\n", cookies)
+	p.jar [u.Host] = cookies
+}
+
+func (p *myjar) Cookies(u *url.URL) []*http.Cookie {
+	fmt.Printf("The URL is : %s\n", u.String())
+	fmt.Printf("Cookie being returned is : %s\n", p.jar[u.Host])
+	return p.jar[u.Host]
+}
+
 func basicAuth(username, password string) string {
 	auth := username + ":" + password
 	return base64.StdEncoding.EncodeToString([]byte(auth))
@@ -66,9 +82,15 @@ func main() {
 	}
 
 	// Connection creation
+
+	jar := &myjar{}
+	jar.jar = make(map[string] []*http.Cookie)
+	client.Jar = jar
+
 	/*
 // TODO OAuth
 // TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
+
 req.SetBasicAuth("username1", "password123")
 
 
@@ -168,4 +190,6 @@ form: {
 		fmt.Printf("%2d %s (%s)\n", i, scrape.Text(article), scrape.Attr(article, "href"))
 	}
    */
+
+
 }
