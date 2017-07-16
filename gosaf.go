@@ -50,7 +50,7 @@ func main() {
 	var bookid string
 
 	flag.StringVar(&username, "u", "", "Your username.")
-	flag.StringVar(&password, "p", "", "Your password (optional, you can enter it interactively.")
+	flag.StringVar(&password, "p", "", "Your password (optional, you can enter it interactively.)")
 	flag.StringVar(&bookid, "b", "", "The bookid. Open the book in the browser, you'll find it after the slash after the bookname.")
 
 	flag.Usage = func() {
@@ -68,13 +68,15 @@ func main() {
 		return
 	}
 
-	fmt.Println("Please enter your password:")
-	passwordHidden, err := terminal.ReadPassword(0)
-	password = string(passwordHidden)
-
 	if password == "" {
-		fmt.Println("Password not given. Program exits.")
-		return
+		fmt.Println("Please enter your password:")
+		passwordHidden, err := terminal.ReadPassword(0)
+		password = string(passwordHidden)
+		// recheck
+		if password == "" {
+			fmt.Println("Password not given. Program exits.")
+			return
+		}
 	}
 	if bookid == "" {
 		fmt.Println("Book-ID not given. You can find the bookid using your web browser: https://www.safaribooksonline.com/library/view/yourbookname/>>>9781788390552<<< \nProgram exits now.")
@@ -83,9 +85,7 @@ func main() {
 
 	// Connection creation
 
-	jar := &myjar{}
-	jar.jar = make(map[string] []*http.Cookie)
-	client.Jar = jar
+
 
 	/*
 // TODO OAuth
