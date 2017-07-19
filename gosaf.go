@@ -119,7 +119,7 @@ form: {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// client := http.Client{Jar: jar}
+
 	client := &http.Client{
 		Jar: jar,
 		CheckRedirect: redirectPolicyFunc,
