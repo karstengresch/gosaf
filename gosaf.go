@@ -119,12 +119,21 @@ form: {
 	if err != nil {
 		log.Fatal(err)
 	}
-	client := http.Client{Jar: jar}
+	// client := http.Client{Jar: jar}
+	client := &http.Client{
+		Jar: jar,
+		CheckRedirect: redirectPolicyFunc,
+	}
+
+	req, err := http.NewRequest("GET", baseUrl, nil)
+	req.Header.Add("Authorization","Basic "+basicAuth(username,password))
+
+	resp, err := client.Do(req)
 
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
 
-	resp, err := client.PostForm(baseUrl, url.Values{
+	resp, err = client.PostForm(baseUrl, url.Values{
 
 		"client_id":     {clientId},
 		"client_secret": {clientSecret},
@@ -138,7 +147,7 @@ form: {
 	}
 
 	resp, err = client.PostForm("baseUrl"+"/oauth2/access_token/", url.Values{
-		"userid": {"2"},
+		"userid": {clientId},
 	})
 	if err != nil {
 		fmt.Println("OAuth2 post form did not work.")
