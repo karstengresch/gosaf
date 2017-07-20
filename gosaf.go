@@ -110,7 +110,7 @@ form: {
 */
 
 	baseUrl := "https://www.safaribooksonline.com"
-	// loginSubUrl := "/accounts/login"
+	loginSubUrl := "/accounts/login"
 	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
@@ -125,7 +125,7 @@ form: {
 		CheckRedirect: redirectPolicyFunc,
 	}
 
-	req, err := http.NewRequest("GET", baseUrl, nil)
+	req, err := http.NewRequest("GET", baseUrl + loginSubUrl, nil)
 	req.Header.Add("Authorization","Basic "+basicAuth(username,password))
 
 	resp, err := client.Do(req)
@@ -146,7 +146,7 @@ form: {
 		log.Fatal(err)
 	}
 
-	resp, err = client.PostForm("baseUrl"+"/oauth2/access_token/", url.Values{
+	resp, err = client.PostForm(baseUrl+"/oauth2/access_token/", url.Values{
 		"userid": {clientId},
 	})
 	if err != nil {
