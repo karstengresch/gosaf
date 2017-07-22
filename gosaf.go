@@ -6,6 +6,7 @@ import (
 	_ "fmt"
 	"net/http"
 	"net/http/cookiejar"
+    "github.com/ajg/form"
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
@@ -16,10 +17,25 @@ import (
 	"io/ioutil"
 	"fmt"
 	"os"
+	// "time"
 )
 
 type myjar struct {
 	jar map[string] []*http.Cookie
+}
+
+type LoginFormData struct {
+	ClientId        string            `form:"client_id"`
+	ClientSecret    string            `form:"client_secret"`
+	Username        string            `form:"username"`
+	Password        string            `form:"password"`
+	GrantType       string            `form:"grant_type"`
+}
+
+func PostLogin(url string, loginFormData LoginFormData) error {
+	var c http.Client
+	_, err := c.PostForm(url, form.EncodeToValues(loginFormData))
+	return err
 }
 
 func (p* myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
