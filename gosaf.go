@@ -112,6 +112,7 @@ form: {
 	baseUrl := "https://www.safaribooksonline.com"
 	loginSubUrl := "/accounts/login"
 	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
+	// TODO Check https://searchcode.com/codesearch/view/116365577/
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
