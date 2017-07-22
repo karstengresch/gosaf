@@ -6,7 +6,7 @@ import (
 	_ "fmt"
 	"net/http"
 	"net/http/cookiejar"
-    "github.com/ajg/form"
+    "github.com/gorilla/schema"
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	// "time"
+	// "github.com/ajg/form"
 )
 
 type myjar struct {
@@ -25,17 +26,33 @@ type myjar struct {
 }
 
 type LoginFormData struct {
-	ClientId        string            `form:"client_id"`
-	ClientSecret    string            `form:"client_secret"`
-	Username        string            `form:"username"`
-	Password        string            `form:"password"`
-	GrantType       string            `form:"grant_type"`
+	ClientId        string            `schema:"client_id"`
+	ClientSecret    string            `schema:"client_secret"`
+	Username        string            `schema:"username"`
+	Password        string            `schema:"password"`
+	GrantType       string            `schema:"grant_type"`
 }
 
-func PostLogin(url string, loginFormData LoginFormData) error {
-	var c http.Client
-	_, err := c.PostForm(url, form.EncodeToValues(loginFormData))
-	return err
+func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) {
+
+	var encoder = schema.NewEncoder()
+	loginFormData := LoginFormData{clientId, clientSecret, username, password, grantType}
+	form := url.Values{}
+	err := encoder.Encode(loginFormData, form)
+
+	if err != nil {
+		// Handle error
+	}
+
+	// Use form values, for example, with an http client
+	client := new(http.Client)
+	res, err := client.PostForm(baseUrl, form)
+
+	if res != nil {
+		fmt.Printf("Got this result: " + string(res.Status))
+	}
+
+
 }
 
 func (p* myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
@@ -146,6 +163,10 @@ form: {
 	req.Header.Add("Authorization","Basic "+basicAuth(username,password))
 
 	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Problem w/ base auth.")
+		log.Fatal(err)
+	}
 
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
