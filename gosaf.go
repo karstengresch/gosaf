@@ -41,7 +41,6 @@ func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, us
 	err := encoder.Encode(loginFormData, form)
 
 	if err != nil {
-		// Handle error
 	}
 
 	// Use form values, for example, with an http client
@@ -51,7 +50,6 @@ func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, us
 	if res != nil {
 		fmt.Printf("Got this result: " + string(res.Status))
 	}
-
 
 }
 
@@ -126,20 +124,6 @@ func main() {
 	/*
 // TODO OAuth
 // TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
-
-req.SetBasicAuth("username1", "password123")
-
-
-i.e.
-
-form: {
-  "client_id" : this.clientId,
-  "client_secret" : this.clientSecret,
-  "grant_type" : "password",
-  "username" : username,
-  "password" : password
-},
-
 */
 
 	baseUrl := "https://www.safaribooksonline.com"
