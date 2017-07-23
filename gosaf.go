@@ -19,6 +19,7 @@ import (
 	"os"
 	// "time"
 	// "github.com/ajg/form"
+	"bytes"
 )
 
 type myjar struct {
@@ -33,7 +34,7 @@ type LoginFormData struct {
 	GrantType       string            `schema:"grant_type"`
 }
 
-func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) {
+func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) http.Response {
 
 	var encoder = schema.NewEncoder()
 	loginFormData := LoginFormData{clientId, clientSecret, username, password, grantType}
@@ -45,11 +46,20 @@ func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, us
 
 	// Use form values, for example, with an http client
 	client := new(http.Client)
-	res, err := client.PostForm(baseUrl, form)
+	response, err := client.PostForm(baseUrl, form)
 
-	if res != nil {
-		fmt.Printf("Got this result: " + string(res.Status))
+	if response != nil {
+		fmt.Printf("Status: " + string(response.Status))
+
+		bodyBuffer := new(bytes.Buffer)
+		bodyBuffer.ReadFrom(response.Body)
+		bodyBufferString := bodyBuffer.String()
+
+		fmt.Printf("Body: " + bodyBufferString)
 	}
+
+
+	return *response
 
 }
 
@@ -155,6 +165,9 @@ func main() {
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
 
+	SafariHttpRequest(baseUrl, clientId, clientSecret, username, password, "password")
+
+
 	resp, err = client.PostForm(baseUrl, url.Values{
 
 		"client_id":     {clientId},
@@ -179,9 +192,10 @@ func main() {
 	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
+		fmt.Println("Problem after OAuth")
 		log.Fatal(err)
 	}
-	log.Println(string(data)) // print whole html of user profile data
+	log.Println("\nData result: " + string(data)) // print whole html of user profile data
 
 	/*
 	cookieJar, _ := cookiejar.New(nil)
