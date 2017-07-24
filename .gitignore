@@ -15,3 +15,6 @@
 .idea/
 /src
 /pkg
+# tmp stuff
+op.html
+
