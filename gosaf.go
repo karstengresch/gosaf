@@ -14,7 +14,8 @@ import (
 	"net/url"
 	"golang.org/x/net/publicsuffix"
 	"log"
-	// "io/ioutil"
+//	"io/ioutil"
+	"encoding/json"
 	"fmt"
 	"os"
 	// "time"
@@ -34,14 +35,17 @@ type LoginFormData struct {
 	GrantType       string            `schema:"grant_type"`
 }
 
-func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) (*http.Response, error) {
+func SafariAccessToken(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) (accessToken string, responseError error) {
 
-	var encoder = schema.NewEncoder()
+	encoder := schema.NewEncoder()
+	data := map[string]interface{}{}
+
 	loginFormData := LoginFormData{clientId, clientSecret, username, password, grantType}
 	form := url.Values{}
 	err := encoder.Encode(loginFormData, form)
 
 	if err != nil {
+		fmt.Printf("Encode failed: " + err.Error())
 	}
 
 	// Use form values, for example, with an http client
@@ -56,9 +60,14 @@ func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, us
 		bodyBufferString := bodyBuffer.String()
 
 		fmt.Printf("Body: " + bodyBufferString)
+		defer response.Body.Close()
+		// body, _ := ioutil.ReadAll(response.Body)
+		json.Unmarshal(bodyBuffer.Bytes(), &data)
+		fmt.Printf("lonely")
+		return data["access_token"].(string), responseError
 	}
 
-	return response, err
+	return
 
 }
 
@@ -163,14 +172,15 @@ func main() {
 
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
+	// var accessToken string
 
-	resp, err = SafariHttpRequest(baseUrl+"/oauth2/access_token/", clientId, clientSecret, username, password, "password")
+	accessToken, err := SafariAccessToken(baseUrl+"/oauth2/access_token/", clientId, clientSecret, username, password, "password")
 	if err != nil {
-		fmt.Println("SafariHttpRequest failed.")
+		fmt.Println("\nSafariHttpRequest failed.")
 		log.Fatal(err)
 	}
-
-	fmt.Println(resp.Body)
+	fmt.Println("\nAccess Token is: " + accessToken)
+	
 	resp.Body.Close()
 
 
