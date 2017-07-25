@@ -14,7 +14,7 @@ import (
 	"net/url"
 	"golang.org/x/net/publicsuffix"
 	"log"
-	"io/ioutil"
+	// "io/ioutil"
 	"fmt"
 	"os"
 	// "time"
@@ -34,7 +34,7 @@ type LoginFormData struct {
 	GrantType       string            `schema:"grant_type"`
 }
 
-func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) http.Response {
+func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) (*http.Response, error) {
 
 	var encoder = schema.NewEncoder()
 	loginFormData := LoginFormData{clientId, clientSecret, username, password, grantType}
@@ -58,8 +58,7 @@ func SafariHttpRequest(baseUrl string, clientId string, clientSecret  string, us
 		fmt.Printf("Body: " + bodyBufferString)
 	}
 
-
-	return *response
+	return response, err
 
 }
 
@@ -165,81 +164,14 @@ func main() {
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
 
-	SafariHttpRequest(baseUrl, clientId, clientSecret, username, password, "password")
-
-
-	resp, err = client.PostForm(baseUrl, url.Values{
-
-		"client_id":     {clientId},
-		"client_secret": {clientSecret},
-		"grant_type":    {"password"},
-		"username":      {username},
-		"password":      {password},
-	})
+	resp, err = SafariHttpRequest(baseUrl+"/oauth2/access_token/", clientId, clientSecret, username, password, "password")
 	if err != nil {
-		fmt.Println("Could not post form for client details.")
+		fmt.Println("SafariHttpRequest failed.")
 		log.Fatal(err)
 	}
 
-	resp, err = client.PostForm(baseUrl+"/oauth2/access_token/", url.Values{
-		"userid": {clientId},
-	})
-	if err != nil {
-		fmt.Println("OAuth2 post form did not work.")
-		log.Fatal(err)
-	}
-
-	data, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(resp.Body)
 	resp.Body.Close()
-	if err != nil {
-		fmt.Println("Problem after OAuth")
-		log.Fatal(err)
-	}
-	log.Println("\nData result: " + string(data)) // print whole html of user profile data
-
-	/*
-	cookieJar, _ := cookiejar.New(nil)
-
-
-	client := &http.Client{
-		Jar: cookieJar,
-		CheckRedirect: redirectPolicyFunc,
-	}
-
-	req, err := http.NewRequest("GET", "https://news.ycombinator.com/", nil)
-*/
-
-	/*
-
-	if err != nil {
-		panic(err)
-	}
-
-	// resp, err := client.Do(req)
-
-	resp, err := http.PostForm("http://example.com/form",
-		url.Values{"client_id": {"Value"},
-					"id": {"123"}})
-
-	root, err := html.Parse(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	// define a matcher
-	matcher := func(n *html.Node) bool {
-		// must check for nil values
-		if n.DataAtom == atom.A && n.Parent != nil && n.Parent.Parent != nil {
-			return scrape.Attr(n.Parent.Parent, "class") == "athing"
-		}
-		return false
-	}
-	// grab all articles and print them
-	articles := scrape.FindAll(root, matcher)
-	for i, article := range articles {
-		fmt.Printf("%2d %s (%s)\n", i, scrape.Text(article), scrape.Attr(article, "href"))
-	}
-   */
 
 
 }
