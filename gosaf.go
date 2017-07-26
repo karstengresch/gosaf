@@ -6,7 +6,7 @@ import (
 	_ "fmt"
 	"net/http"
 	"net/http/cookiejar"
-    "github.com/gorilla/schema"
+	"github.com/gorilla/schema"
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
@@ -14,7 +14,7 @@ import (
 	"net/url"
 	"golang.org/x/net/publicsuffix"
 	"log"
-//	"io/ioutil"
+	//	"io/ioutil"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -24,18 +24,25 @@ import (
 )
 
 type myjar struct {
-	jar map[string] []*http.Cookie
+	jar map[string][]*http.Cookie
 }
 
 type LoginFormData struct {
-	ClientId        string            `schema:"client_id"`
-	ClientSecret    string            `schema:"client_secret"`
-	Username        string            `schema:"username"`
-	Password        string            `schema:"password"`
-	GrantType       string            `schema:"grant_type"`
+	ClientId     string            `schema:"client_id"`
+	ClientSecret string            `schema:"client_secret"`
+	Username     string            `schema:"username"`
+	Password     string            `schema:"password"`
+	GrantType    string            `schema:"grant_type"`
 }
 
-func SafariAccessToken(baseUrl string, clientId string, clientSecret  string, username string, password string, grantType string) (accessToken string, responseError error) {
+/*type BookRequestData struct {
+	MethodType      string            `schema:"method"`
+	headers         string            `schema:"headers"`
+	Uri        		string            `schema:"uri"`
+	json        	string            `schema:"json"`
+}*/
+
+func SafariAccessToken(baseUrl string, clientId string, clientSecret string, username string, password string, grantType string) (accessToken string, responseError error) {
 
 	encoder := schema.NewEncoder()
 	data := map[string]interface{}{}
@@ -61,9 +68,7 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret  string, us
 
 		fmt.Printf("Body: " + bodyBufferString)
 		defer response.Body.Close()
-		// body, _ := ioutil.ReadAll(response.Body)
 		json.Unmarshal(bodyBuffer.Bytes(), &data)
-		fmt.Printf("lonely")
 		return data["access_token"].(string), responseError
 	}
 
@@ -71,7 +76,35 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret  string, us
 
 }
 
-func (p* myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
+func BookData(method string, accessToken string, uri string) {
+	// encoder := schema.NewEncoder()
+	// data := map[string]interface{}{}
+
+	/*bookRequestData := BookRequestData{method, headers, uri, json}
+	form := url.Values{}
+	err := encoder.Encode(bookRequestData, form)
+
+	if err != nil {
+		fmt.Printf("Encode failed: " + err.Error())
+	}*/
+
+	client := &http.Client{}
+	request, err := http.NewRequest("GET", uri, nil)
+
+	if err != nil {
+		fmt.Printf("HTTP GET request failed: " + err.Error())
+	}
+	request.Header.Set("access_token", accessToken)
+	response, err := client.Do(request)
+
+
+	if response != nil {
+		fmt.Printf("Book Request Status: " + string(response.Status))
+	}
+
+}
+
+func (p *myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
 	fmt.Printf("The URL is : %s\n", u.String())
 	fmt.Printf("The cookie being set is : %s\n", cookies)
 	p.jar [u.Host] = cookies
@@ -137,8 +170,6 @@ func main() {
 
 	// Connection creation
 
-
-
 	/*
 // TODO OAuth
 // TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
@@ -157,12 +188,12 @@ func main() {
 	}
 
 	client := &http.Client{
-		Jar: jar,
+		Jar:           jar,
 		CheckRedirect: redirectPolicyFunc,
 	}
 
-	req, err := http.NewRequest("GET", baseUrl + loginSubUrl, nil)
-	req.Header.Add("Authorization","Basic "+basicAuth(username,password))
+	req, err := http.NewRequest("GET", baseUrl+loginSubUrl, nil)
+	req.Header.Add("Authorization", "Basic "+basicAuth(username, password))
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -180,8 +211,48 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("\nAccess Token is: " + accessToken)
-	
-	resp.Body.Close()
 
+	bookRequest, err := http.NewRequest("GET", bookurl, nil)
+
+	bookRequest.Header.Add("authorization", "Bearer "+accessToken)
+	bookResponse, err := client.Do(req)
+	if err == nil {
+		bodyBuffer := new(bytes.Buffer)
+		bodyBuffer.ReadFrom(bookResponse.Body)
+		bodyBufferString := bodyBuffer.String()
+
+		fmt.Printf("Body: " + bodyBufferString)
+
+	}
+
+	/*
+	  debug(`fetchResource called with URL: ${url}`);
+  if(!url || !this.accessToken) return Promise.reject("url was not specified or user has not been authorized yet");
+  // ## prepare options for resource request
+  var uri = `${this.baseUrl}/${url}`;
+  var json = true;
+  var headers = {
+    "authorization": `Bearer ${this.accessToken}`
+  };
+  if(options && options.json == false) json = false;
+  if(options && options.uri) uri = options.uri;
+  let settings = {
+
+  };
+  // ## make request
+  return request(settings).then( (body) => {
+    // ### the request was successful
+    return Promise.resolve(body);
+  }).catch( (err) => {
+    // ### an error occurred
+    debug(`there was an unexpected error fetching the resource (err: ${err})`)
+    return Promise.reject(err);
+  });
+}
+
+
+	*/
+
+	resp.Body.Close()
 
 }
