@@ -163,16 +163,14 @@ func main() {
 	bookRequest.Header.Add("authorization", "Bearer "+accessToken)
 
 	client := &http.Client{}
+
 	bookResponse, err := client.Do(bookRequest)
+	defer bookResponse.Body.Close()
 	if err == nil {
 		bodyBuffer := new(bytes.Buffer)
 		bodyBuffer.ReadFrom(bookResponse.Body)
 		bodyBufferString := bodyBuffer.String()
 
 		fmt.Printf("Body: " + bodyBufferString)
-
 	}
-
-	bookResponse.Body.Close()
-
 }
