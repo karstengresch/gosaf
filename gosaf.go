@@ -155,6 +155,7 @@ func main() {
 	}
 	fmt.Println("\nAccess Token is: " + accessToken)
 
+	// Should also be a GET API call
 	bookRequest, err := http.NewRequest("GET", bookurl, nil)
 
 	bookRequest.Header.Set("authorization", "Bearer "+accessToken)
