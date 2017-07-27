@@ -97,11 +97,6 @@ func (p *myjar) Cookies(u *url.URL) []*http.Cookie {
 	return p.jar[u.Host]
 }
 
-func basicAuth(username, password string) string {
-	auth := username + ":" + password
-	return base64.StdEncoding.EncodeToString([]byte(auth))
-}
-
 func main() {
 	var username string
 	var password string
