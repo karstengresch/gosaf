@@ -5,14 +5,14 @@ import (
 	"encoding/base64"
 	_ "fmt"
 	"net/http"
-	"net/http/cookiejar"
+	// "net/http/cookiejar"
 	"github.com/gorilla/schema"
 	// "github.com/yhat/scrape"
 	// "golang.org/x/net/html"
 	// "golang.org/x/net/html/atom"
 	"golang.org/x/crypto/ssh/terminal"
 	"net/url"
-	"golang.org/x/net/publicsuffix"
+	// "golang.org/x/net/publicsuffix"
 	"log"
 	//	"io/ioutil"
 	"encoding/json"
@@ -176,30 +176,31 @@ func main() {
 */
 
 	baseUrl := "https://www.safaribooksonline.com"
+	/*
 	loginSubUrl := "/accounts/login"
 	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
 	// TODO Check https://searchcode.com/codesearch/view/116365577/
-	options := cookiejar.Options{
-		PublicSuffixList: publicsuffix.List,
-	}
-	jar, err := cookiejar.New(&options)
-	if err != nil {
-		log.Fatal(err)
-	}
+		options := cookiejar.Options{
+			PublicSuffixList: publicsuffix.List,
+		}
+		jar, err := cookiejar.New(&options)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	client := &http.Client{
-		Jar:           jar,
-		CheckRedirect: redirectPolicyFunc,
-	}
+		client := &http.Client{
+			Jar:           jar,
+			CheckRedirect: redirectPolicyFunc,
+		}
 
-	req, err := http.NewRequest("GET", baseUrl+loginSubUrl, nil)
-	req.Header.Add("Authorization", "Basic "+basicAuth(username, password))
+		req, err := http.NewRequest("GET", baseUrl+loginSubUrl, nil)
+		req.Header.Add("Authorization", "Basic "+basicAuth(username, password))
 
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Problem w/ base auth.")
-		log.Fatal(err)
-	}
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println("Problem w/ base auth.")
+			log.Fatal(err)
+		} */
 
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
@@ -215,7 +216,9 @@ func main() {
 	bookRequest, err := http.NewRequest("GET", bookurl, nil)
 
 	bookRequest.Header.Add("authorization", "Bearer "+accessToken)
-	bookResponse, err := client.Do(req)
+
+	client := &http.Client{}
+	bookResponse, err := client.Do(bookRequest)
 	if err == nil {
 		bodyBuffer := new(bytes.Buffer)
 		bodyBuffer.ReadFrom(bookResponse.Body)
@@ -253,6 +256,6 @@ func main() {
 
 	*/
 
-	resp.Body.Close()
+	bookResponse.Body.Close()
 
 }
