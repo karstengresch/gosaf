@@ -173,34 +173,6 @@ func main() {
 
 	}
 
-	/*
-	  debug(`fetchResource called with URL: ${url}`);
-  if(!url || !this.accessToken) return Promise.reject("url was not specified or user has not been authorized yet");
-  // ## prepare options for resource request
-  var uri = `${this.baseUrl}/${url}`;
-  var json = true;
-  var headers = {
-    "authorization": `Bearer ${this.accessToken}`
-  };
-  if(options && options.json == false) json = false;
-  if(options && options.uri) uri = options.uri;
-  let settings = {
-
-  };
-  // ## make request
-  return request(settings).then( (body) => {
-    // ### the request was successful
-    return Promise.resolve(body);
-  }).catch( (err) => {
-    // ### an error occurred
-    debug(`there was an unexpected error fetching the resource (err: ${err})`)
-    return Promise.reject(err);
-  });
-}
-
-
-	*/
-
 	bookResponse.Body.Close()
 
 }
