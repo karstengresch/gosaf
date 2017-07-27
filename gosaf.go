@@ -102,11 +102,6 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func redirectPolicyFunc(req *http.Request, via []*http.Request) error {
-	req.Header.Add("Authorization", "Basic "+basicAuth("username1", "password123"))
-	return nil
-}
-
 func main() {
 	var username string
 	var password string
