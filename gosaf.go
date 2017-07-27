@@ -139,7 +139,6 @@ func main() {
 	}
 
 	// Connection creation
-
 	/*
 		// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
 	*/
