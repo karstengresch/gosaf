@@ -157,7 +157,8 @@ func main() {
 
 	bookRequest, err := http.NewRequest("GET", bookurl, nil)
 
-	bookRequest.Header.Add("authorization", "Bearer "+accessToken)
+	bookRequest.Header.Set("authorization", "Bearer "+accessToken)
+	bookRequest.Header.Set("access_token", accessToken)
 
 	client := &http.Client{}
 
