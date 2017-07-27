@@ -69,17 +69,6 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret string, use
 }
 
 func BookData(method string, accessToken string, uri string) {
-	// encoder := schema.NewEncoder()
-	// data := map[string]interface{}{}
-
-	/*bookRequestData := BookRequestData{method, headers, uri, json}
-	form := url.Values{}
-	err := encoder.Encode(bookRequestData, form)
-
-	if err != nil {
-		fmt.Printf("Encode failed: " + err.Error())
-	}*/
-
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", uri, nil)
 
