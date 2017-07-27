@@ -147,32 +147,6 @@ func main() {
 */
 
 	baseUrl := "https://www.safaribooksonline.com"
-	/*
-	loginSubUrl := "/accounts/login"
-	// accountDetailsAfterLoginUrl := https://www.safaribooksonline.com/api/v1/
-	// TODO Check https://searchcode.com/codesearch/view/116365577/
-		options := cookiejar.Options{
-			PublicSuffixList: publicsuffix.List,
-		}
-		jar, err := cookiejar.New(&options)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		client := &http.Client{
-			Jar:           jar,
-			CheckRedirect: redirectPolicyFunc,
-		}
-
-		req, err := http.NewRequest("GET", baseUrl+loginSubUrl, nil)
-		req.Header.Add("Authorization", "Basic "+basicAuth(username, password))
-
-		resp, err := client.Do(req)
-		if err != nil {
-			fmt.Println("Problem w/ base auth.")
-			log.Fatal(err)
-		} */
-
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
 	clientId := "446a8a270214734f42a7";
 	// var accessToken string
