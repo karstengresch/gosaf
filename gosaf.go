@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"encoding/base64"
 	_ "fmt"
 	"net/http"
 	"github.com/gorilla/schema"
