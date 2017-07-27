@@ -141,9 +141,8 @@ func main() {
 	// Connection creation
 
 	/*
-// TODO OAuth
-// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
-*/
+		// TODO Follow https://github.com/nicohaenggi/SafariBooks-Downloader/blob/master/lib/safari/index.js but w/ multiple CSS.
+	*/
 
 	baseUrl := "https://www.safaribooksonline.com"
 	clientSecret := "f52b3e30b68c1820adb08609c799cb6da1c29975";
