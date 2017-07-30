@@ -100,6 +100,11 @@ func BookData(method string, accessToken string, uri string) {
 
 }
 
+func checkRedirectFunc(req *http.Request, via []*http.Request) error {
+	req.Header.Add("Authorization", via[0].Header.Get("Authorization"))
+	return nil
+}
+
 func (p *myjar) SetCookies(u *url.URL, cookies []*http.Cookie) {
 	fmt.Printf("The URL is : %s\n", u.String())
 	fmt.Printf("The cookie being set is : %s\n", cookies)
@@ -171,16 +176,14 @@ func main() {
 	}
 	fmt.Println("\nAccess Token is: " + accessToken)
 
-	// Should also be a GET API call
+	var bearer = "Bearer " + accessToken
 	bookRequest, err := http.NewRequest("GET", bookurl, nil)
-
-	bookRequest.Header.Set("authorization", "Bearer "+accessToken)
-	bookRequest.Header.Set("access_token", accessToken)
-
+	bookRequest.Header.Add("authorization", bearer)
 	client := &http.Client{}
+	client.CheckRedirect = checkRedirectFunc
 
 	bookResponse, err := client.Do(bookRequest)
-	defer bookResponse.Body.Close()
+
 	if err == nil {
 		bodyBuffer := new(bytes.Buffer)
 		bodyBuffer.ReadFrom(bookResponse.Body)
@@ -188,4 +191,5 @@ func main() {
 
 		fmt.Printf("Body: " + bodyBufferString)
 	}
+	defer bookResponse.Body.Close()
 }
