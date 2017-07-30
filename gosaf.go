@@ -26,12 +26,12 @@ type LoginFormData struct {
 	GrantType    string            `schema:"grant_type"`
 }
 
-/*type BookRequestData struct {
+type BookRequestData struct {
 	MethodType      string            `schema:"method"`
 	headers         string            `schema:"headers"`
 	Uri        		string            `schema:"uri"`
-	json        	string            `schema:"json"`
-}*/
+	Json        	string            `schema:"json"`
+}
 
 func SafariAccessToken(baseUrl string, clientId string, clientSecret string, username string, password string, grantType string) (accessToken string, responseError error) {
 
@@ -68,19 +68,35 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret string, use
 }
 
 func BookData(method string, accessToken string, uri string) {
-	client := &http.Client{}
-	request, err := http.NewRequest("GET", uri, nil)
+	encoder := schema.NewEncoder()
+	data := map[string]interface{}{}
+
+	loginFormData := BookRequestData{}
+	form := url.Values{}
+	err := encoder.Encode(loginFormData, form)
 
 	if err != nil {
-		fmt.Printf("HTTP GET request failed: " + err.Error())
+		fmt.Printf("Encode failed: " + err.Error())
 	}
-	request.Header.Set("access_token", accessToken)
-	response, err := client.Do(request)
 
+	// Use form values, for example, with an http client
+	client := new(http.Client)
+	response, err := client.PostForm(uri, form)
 
 	if response != nil {
-		fmt.Printf("Book Request Status: " + string(response.Status))
+		fmt.Printf("Status: " + string(response.Status))
+
+		bodyBuffer := new(bytes.Buffer)
+		bodyBuffer.ReadFrom(response.Body)
+		bodyBufferString := bodyBuffer.String()
+
+		fmt.Printf("Body: " + bodyBufferString)
+		defer response.Body.Close()
+		json.Unmarshal(bodyBuffer.Bytes(), &data)
+		// return data["access_token"].(string), responseError
 	}
+
+	return
 
 }
 
