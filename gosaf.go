@@ -198,4 +198,16 @@ func main() {
 		fmt.Printf("Body: " + bodyBufferString)
 	}
 	defer bookResponse.Body.Close()
+
+	book, error := BookData("GET", accessToken, bookurl)
+
+	if book != "" {
+		fmt.Printf("Body: " + book)
+	}
+
+	if error != nil {
+		fmt.Printf("Error fetching book")
+	}
+
+
 }
