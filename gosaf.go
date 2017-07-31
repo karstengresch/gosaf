@@ -28,7 +28,7 @@ type LoginFormData struct {
 
 type BookRequestData struct {
 	MethodType      string            `schema:"method"`
-	headers         string            `schema:"headers"`
+	headers         []string           `schema:"headers"`
 	Uri        		string            `schema:"uri"`
 	Json        	string            `schema:"json"`
 }
@@ -67,16 +67,17 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret string, use
 
 }
 
-func BookData(method string, accessToken string, uri string) {
+func BookData(method string, accessToken string, uri string) (body string, responseError error) {
 	encoder := schema.NewEncoder()
 	data := map[string]interface{}{}
+	headers := []string{"authorization", "Bearer " + accessToken}
 
-	loginFormData := BookRequestData{}
+	accessFormData := BookRequestData{"GET", headers, uri, "json"}
 	form := url.Values{}
-	err := encoder.Encode(loginFormData, form)
+	encodeError := encoder.Encode(accessFormData, form)
 
-	if err != nil {
-		fmt.Printf("Encode failed: " + err.Error())
+	if encodeError != nil {
+		fmt.Printf("Encode failed: " + encodeError.Error())
 	}
 
 	// Use form values, for example, with an http client
@@ -93,7 +94,12 @@ func BookData(method string, accessToken string, uri string) {
 		fmt.Printf("Body: " + bodyBufferString)
 		defer response.Body.Close()
 		json.Unmarshal(bodyBuffer.Bytes(), &data)
-		// return data["access_token"].(string), responseError
+
+		if err != nil {
+			fmt.Printf("Status: " + string(response.Status))
+		}
+
+		return bodyBufferString, err
 	}
 
 	return
