@@ -85,7 +85,7 @@ func BookData(method string, accessToken string, uri string) (body string, respo
 	response, err := client.PostForm(uri, form)
 
 	if response != nil {
-		fmt.Printf("Status: " + string(response.Status))
+		fmt.Printf("Book GET request. Status: " + string(response.Status))
 
 		bodyBuffer := new(bytes.Buffer)
 		bodyBuffer.ReadFrom(response.Body)
@@ -96,7 +96,7 @@ func BookData(method string, accessToken string, uri string) (body string, respo
 		json.Unmarshal(bodyBuffer.Bytes(), &data)
 
 		if err != nil {
-			fmt.Printf("Status: " + string(response.Status))
+			fmt.Printf("Body unmarshall. Status: " + string(response.Status))
 		}
 
 		return bodyBufferString, err
