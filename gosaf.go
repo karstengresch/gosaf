@@ -33,7 +33,7 @@ type BookRequestData struct {
 	Json        	string            `schema:"json"`
 }
 
-func SafariAccessToken(baseUrl string, clientId string, clientSecret string, username string, password string, grantType string) (accessToken string, responseError error) {
+func SafariAccessToken(baseUrl string, clientId string, clientSecret string, username string, password string, grantType string) (accessToken string, loginFormData LoginFormData, responseError error) {
 
 	encoder := schema.NewEncoder()
 	data := map[string]interface{}{}
@@ -74,10 +74,11 @@ func BookData(method string, accessToken string, uri string) (body string, respo
 
 	accessFormData := BookRequestData{"GET", headers, uri, "json"}
 	form := url.Values{}
+	fmt.Println("BookData - uri: " + uri)
 	encodeError := encoder.Encode(accessFormData, form)
 
 	if encodeError != nil {
-		fmt.Printf("Encode failed: " + encodeError.Error())
+		fmt.Println("Encode failed: " + encodeError.Error())
 	}
 
 	// Use form values, for example, with an http client
@@ -85,18 +86,18 @@ func BookData(method string, accessToken string, uri string) (body string, respo
 	response, err := client.PostForm(uri, form)
 
 	if response != nil {
-		fmt.Printf("Book GET request. Status: " + string(response.Status))
+		fmt.Println("Book GET request. Status: " + string(response.Status))
 
 		bodyBuffer := new(bytes.Buffer)
 		bodyBuffer.ReadFrom(response.Body)
 		bodyBufferString := bodyBuffer.String()
 
-		fmt.Printf("Body: " + bodyBufferString)
+		fmt.Println("Body: " + bodyBufferString)
 		defer response.Body.Close()
 		json.Unmarshal(bodyBuffer.Bytes(), &data)
 
 		if err != nil {
-			fmt.Printf("Body unmarshall. Status: " + string(response.Status))
+			fmt.Println("Body unmarshall. Status: " + string(response.Status))
 		}
 
 		return bodyBufferString, err
@@ -175,7 +176,7 @@ func main() {
 	clientId := "446a8a270214734f42a7";
 	// var accessToken string
 
-	accessToken, err := SafariAccessToken(baseUrl+"/oauth2/access_token/", clientId, clientSecret, username, password, "password")
+	accessToken, loginFormData, err := SafariAccessToken(baseUrl+"/oauth2/access_token/", clientId, clientSecret, username, password, "password")
 	if err != nil {
 		fmt.Println("\nSafariHttpRequest failed.")
 		log.Fatal(err)
@@ -199,14 +200,15 @@ func main() {
 	}
 	defer bookResponse.Body.Close()
 */
-	book, error := BookData("GET", accessToken, baseUrl + "/api/v1/book/" + bookId + "/")
+	bookFetchUrl := baseUrl + "/api/v1/book/" + bookId + "/"
+	book, error := BookData("GET", accessToken, bookFetchUrl)
 
 	if book != "" {
-		fmt.Printf("Body: " + book)
+		fmt.Println("Body: " + book)
 	}
 
 	if error != nil {
-		fmt.Printf("Error fetching book")
+		fmt.Println("Error fetching book")
 	}
 
 
