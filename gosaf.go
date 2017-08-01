@@ -130,7 +130,7 @@ func main() {
 
 	flag.StringVar(&username, "u", "", "Your username.")
 	flag.StringVar(&password, "p", "", "Your password (optional, you can enter it interactively.)")
-	flag.StringVar(&bookId, "b", "", "The bookId. Open the book in the browser, it ends /w a number. This is the number to pass")
+	flag.StringVar(&bookId, "b", "", "The book ID. Open the book in the browser, it ends /w a number. This is the number to pass")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
@@ -182,7 +182,7 @@ func main() {
 	}
 	fmt.Println("\nAccess Token is: " + accessToken)
 
-	var bearer = "Bearer " + accessToken
+	/* var bearer = "Bearer " + accessToken
 	bookRequest, err := http.NewRequest("GET", bookId, nil)
 	bookRequest.Header.Add("authorization", bearer)
 	client := &http.Client{}
@@ -198,8 +198,8 @@ func main() {
 		fmt.Printf("Body: " + bodyBufferString)
 	}
 	defer bookResponse.Body.Close()
-
-	book, error := BookData("GET", accessToken, bookId)
+*/
+	book, error := BookData("GET", accessToken, baseUrl + "/api/v1/book/" + bookId + "/")
 
 	if book != "" {
 		fmt.Printf("Body: " + book)
