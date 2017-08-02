@@ -38,7 +38,7 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret string, use
 	encoder := schema.NewEncoder()
 	data := map[string]interface{}{}
 
-	loginFormData := LoginFormData{clientId, clientSecret, username, password, grantType}
+	loginFormData = LoginFormData{clientId, clientSecret, username, password, grantType}
 	form := url.Values{}
 	err := encoder.Encode(loginFormData, form)
 
@@ -60,14 +60,14 @@ func SafariAccessToken(baseUrl string, clientId string, clientSecret string, use
 		fmt.Printf("Body: " + bodyBufferString)
 		defer response.Body.Close()
 		json.Unmarshal(bodyBuffer.Bytes(), &data)
-		return data["access_token"].(string), responseError
+		return data["access_token"].(string), loginFormData, responseError
 	}
 
 	return
 
 }
 
-func BookData(method string, accessToken string, uri string) (body string, responseError error) {
+func BookData(method string, accessToken string, uri string, loginFormData LoginFormData) (body string, responseError error) {
 	encoder := schema.NewEncoder()
 	data := map[string]interface{}{}
 	headers := []string{"authorization", "Bearer " + accessToken}
@@ -75,7 +75,9 @@ func BookData(method string, accessToken string, uri string) (body string, respo
 	accessFormData := BookRequestData{"GET", headers, uri, "json"}
 	form := url.Values{}
 	fmt.Println("BookData - uri: " + uri)
-	encodeError := encoder.Encode(accessFormData, form)
+
+	encodeError := encoder.Encode(loginFormData, form)
+	encodeError = encoder.Encode(accessFormData, form)
 
 	if encodeError != nil {
 		fmt.Println("Encode failed: " + encodeError.Error())
@@ -201,7 +203,7 @@ func main() {
 	defer bookResponse.Body.Close()
 */
 	bookFetchUrl := baseUrl + "/api/v1/book/" + bookId + "/"
-	book, error := BookData("GET", accessToken, bookFetchUrl)
+	book, error := BookData("GET", accessToken, bookFetchUrl, loginFormData)
 
 	if book != "" {
 		fmt.Println("Body: " + book)
